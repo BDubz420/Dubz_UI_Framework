@@ -1,7 +1,7 @@
 --[[
     DUIF - Dubz UI Framework
     File: autorun/duif.lua
-    Purpose: Standalone addon loader (server AddCSLuaFile + client include bootstrap).
+    Purpose: Standalone addon loader (server AddCSLuaFile/resource provisioning + client bootstrap).
 ]]
 
 if SERVER then
@@ -26,6 +26,24 @@ if SERVER then
 
     for _, path in ipairs(files) do
         AddCSLuaFile(path)
+    end
+
+    -- Optional bundled font distribution support.
+    -- If you place fonts in resource/fonts or resource/fonts/duif, they will be sent to clients.
+    local fontPatterns = {
+        "resource/fonts/*.ttf",
+        "resource/fonts/*.otf",
+        "resource/fonts/duif/*.ttf",
+        "resource/fonts/duif/*.otf"
+    }
+
+    for _, pattern in ipairs(fontPatterns) do
+        local found = file.Find(pattern, "GAME") or {}
+        local baseDir = string.GetPathFromFilename(pattern)
+
+        for _, fileName in ipairs(found) do
+            resource.AddFile(baseDir .. fileName)
+        end
     end
 
     return
