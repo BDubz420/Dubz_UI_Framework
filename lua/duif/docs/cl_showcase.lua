@@ -150,6 +150,7 @@ function DUIF.OpenShowcase()
     local body = vgui.Create("DScrollPanel", frame)
     body:Dock(FILL)
     body:DockMargin(12, 64, 12, 12)
+    DUIF.StyleScrollBar(body, { wide = 12, rounded = 6 })
 
     local head = vgui.Create("DPanel", body)
     head:Dock(TOP)

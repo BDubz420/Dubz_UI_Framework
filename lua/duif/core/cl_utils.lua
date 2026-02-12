@@ -83,3 +83,38 @@ function DUIF.Toast(message, duration)
         end)
     end)
 end
+
+
+function DUIF.StyleScrollBar(scrollPanel, opts)
+    if not IsValid(scrollPanel) or not IsValid(scrollPanel.VBar) then return end
+
+    opts = DUIF.MergeOptions({
+        wide = 10,
+        rounded = 6
+    }, opts)
+
+    local bar = scrollPanel.VBar
+    bar:SetWide(opts.wide)
+
+    bar.Paint = function(self, w, h)
+        DUIF.DrawRoundedBox(opts.rounded, 0, 0, w, h, ColorAlpha(DUIF.GetColor("Surface"), 120))
+    end
+
+    bar.btnUp.Paint = function(self, w, h)
+        DUIF.DrawRoundedBox(4, 0, 0, w, h, ColorAlpha(DUIF.GetColor("SurfaceAlt"), self:IsHovered() and 220 or 170))
+        draw.SimpleText("▴", "DUIF.Small", w * 0.5, h * 0.5, DUIF.GetColor("TextMuted"), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    end
+
+    bar.btnDown.Paint = function(self, w, h)
+        DUIF.DrawRoundedBox(4, 0, 0, w, h, ColorAlpha(DUIF.GetColor("SurfaceAlt"), self:IsHovered() and 220 or 170))
+        draw.SimpleText("▾", "DUIF.Small", w * 0.5, h * 0.5, DUIF.GetColor("TextMuted"), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    end
+
+    bar.btnGrip.Paint = function(self, w, h)
+        local hover = self:IsHovered() and 1 or 0
+        local gripColor = DUIF.LerpColor(hover, DUIF.GetColor("Accent"), DUIF.GetColor("AccentAlt"))
+
+        DUIF.DrawRoundedBox(opts.rounded, 1, 0, w - 2, h, ColorAlpha(gripColor, 220))
+        DUIF.DrawRoundedBox(opts.rounded, 3, 4, w - 6, h - 8, Color(255, 255, 255, 28))
+    end
+end
