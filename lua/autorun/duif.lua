@@ -1,3 +1,9 @@
+--[[
+    DUIF - Dubz UI Framework
+    File: autorun/duif.lua
+    Purpose: Standalone addon loader (server AddCSLuaFile + client include bootstrap).
+]]
+
 if SERVER then
     local files = {
         "autorun/client/duif_autorun.lua",
@@ -7,7 +13,6 @@ if SERVER then
         "duif/core/cl_fonts.lua",
         "duif/core/cl_animations.lua",
         "duif/components/cl_panel.lua",
-        "duif/components/cl_card.lua",
         "duif/components/cl_button.lua",
         "duif/components/cl_toggle.lua",
         "duif/components/cl_closebutton.lua",
@@ -15,11 +20,12 @@ if SERVER then
         "duif/components/cl_slider.lua",
         "duif/components/cl_dropdown.lua",
         "duif/components/cl_sidebar.lua",
+        "duif/components/cl_card.lua",
         "duif/docs/cl_showcase.lua"
     }
 
-    for _, filePath in ipairs(files) do
-        AddCSLuaFile(filePath)
+    for _, path in ipairs(files) do
+        AddCSLuaFile(path)
     end
 
     return
