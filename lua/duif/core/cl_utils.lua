@@ -20,6 +20,8 @@ function DUIF.LerpColor(frac, fromCol, toCol)
 end
 
 function DUIF.DrawGradient(x, y, w, h, startCol, endCol, horizontal)
+    if w <= 0 or h <= 0 then return end
+
     local steps = 28
 
     for i = 0, steps do
@@ -54,10 +56,28 @@ function DUIF.MergeOptions(defaults, custom)
     return out
 end
 
-
 function DUIF.AttachTooltip(panel, text)
     if not IsValid(panel) then return end
     panel:SetTooltip(text or "")
+end
+
+function DUIF.CreateDivider(parent, opts)
+    opts = DUIF.MergeOptions({
+        tall = 1,
+        margin = {0, 6, 0, 6},
+        color = nil
+    }, opts)
+
+    local div = vgui.Create("DPanel", parent)
+    div:Dock(TOP)
+    div:SetTall(opts.tall)
+    div:DockMargin(opts.margin[1], opts.margin[2], opts.margin[3], opts.margin[4])
+    div.Paint = function(_, w, h)
+        surface.SetDrawColor(opts.color or ColorAlpha(DUIF.GetColor("Border"), 180))
+        surface.DrawRect(0, 0, w, h)
+    end
+
+    return div
 end
 
 function DUIF.Toast(message, duration)
@@ -68,7 +88,7 @@ function DUIF.Toast(message, duration)
     toast:SetPos(ScrW() - 340, 24)
     toast:SetAlpha(0)
     toast:SetMouseInputEnabled(false)
-    toast.Paint = function(self, w, h)
+    toast.Paint = function(_, w, h)
         DUIF.DrawShadowedPanel(0, 0, w, h, 8, DUIF.GetColor("Surface"))
         DUIF.DrawGradient(0, 0, 4, h, DUIF.GetColor("Accent"), DUIF.GetColor("AccentAlt"))
         draw.SimpleText(message or "Toast", "DUIF.Body", 12, h * 0.5, DUIF.GetColor("Text"), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
@@ -84,7 +104,6 @@ function DUIF.Toast(message, duration)
     end)
 end
 
-
 function DUIF.StyleScrollBar(scrollPanel, opts)
     if not IsValid(scrollPanel) or not IsValid(scrollPanel.VBar) then return end
 
@@ -96,7 +115,7 @@ function DUIF.StyleScrollBar(scrollPanel, opts)
     local bar = scrollPanel.VBar
     bar:SetWide(opts.wide)
 
-    bar.Paint = function(self, w, h)
+    bar.Paint = function(_, w, h)
         DUIF.DrawRoundedBox(opts.rounded, 0, 0, w, h, ColorAlpha(DUIF.GetColor("Surface"), 120))
     end
 

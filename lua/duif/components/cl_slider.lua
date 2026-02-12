@@ -19,11 +19,12 @@ function DUIF.CreateSlider(parent, min, max, opts)
     pnl.Min = min or 0
     pnl.Max = max or 100
     pnl.Value = math.Clamp(opts.default, pnl.Min, pnl.Max)
-    pnl.HoverFrac = 0
 
     local slider = vgui.Create("DSlider", pnl)
     slider:Dock(FILL)
+    slider.Paint = function() end
 
+    slider.Knob:SetSize(14, 14)
     slider.Knob.Paint = function(self, w, h)
         DUIF.DrawRoundedBox(7, 0, 0, w, h, Color(238, 243, 255))
     end
@@ -54,10 +55,16 @@ function DUIF.CreateSlider(parent, min, max, opts)
 
     pnl.Paint = function(self, w, h)
         local frac = (self.Value - self.Min) / math.max(1, (self.Max - self.Min))
+        frac = math.Clamp(frac, 0, 1)
         local lineY = h * 0.5
+        local trackX, trackW = 10, (w - 20)
 
-        DUIF.DrawRoundedBox(2, 10, lineY - 2, w - 20, 4, ColorAlpha(DUIF.GetColor("Border"), 180))
-        DUIF.DrawGradient(10, lineY - 2, (w - 20) * frac, 4, DUIF.GetColor("Accent"), DUIF.GetColor("AccentAlt"), true)
+        DUIF.DrawRoundedBox(2, trackX, lineY - 2, trackW, 4, ColorAlpha(DUIF.GetColor("Border"), 180))
+
+        local fillW = math.max(0, trackW * frac)
+        if fillW > 0.5 then
+            DUIF.DrawGradient(trackX, lineY - 2, fillW, 4, DUIF.GetColor("Accent"), DUIF.GetColor("AccentAlt"), true)
+        end
 
         draw.SimpleText(string.format("%s", self.Value), "DUIF.Small", w - 2, 2, DUIF.GetColor("TextMuted"), TEXT_ALIGN_RIGHT)
     end

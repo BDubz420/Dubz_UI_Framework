@@ -21,6 +21,10 @@ if SERVER then
         "duif/components/cl_dropdown.lua",
         "duif/components/cl_sidebar.lua",
         "duif/components/cl_card.lua",
+        "duif/components/cl_progressbar.lua",
+        "duif/components/cl_tabs.lua",
+        "duif/components/cl_modal.lua",
+        "duif/components/cl_collapsible.lua",
         "duif/docs/cl_showcase.lua"
     }
 

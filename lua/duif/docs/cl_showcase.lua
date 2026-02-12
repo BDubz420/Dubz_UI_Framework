@@ -24,7 +24,7 @@ local function snippet(parent, code)
     p:SetTall(44)
     p:DockMargin(0, 0, 0, 12)
     p.Paint = function(_, w, h)
-        DUIF.DrawRoundedBox(8, 0, 0, w, h, DUIF.GetColor("Background"))
+        DUIF.DrawRoundedBox(8, 0, 0, w, h, ColorAlpha(DUIF.GetColor("Surface"), 140))
         draw.SimpleText(code, "DUIF.Mono", 10, h * 0.5, DUIF.GetColor("TextMuted"), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     end
     return p
@@ -60,11 +60,7 @@ local function createInputDemo(parent)
         accentBorder = true
     })
 
-    local entry = DUIF.CreateTextEntry(card, "Type here and press enter...", {
-        onEnter = function(_, value)
-            chat.AddText(DUIF.GetColor("AccentAlt"), "[Entry] ", DUIF.GetColor("Text"), value)
-        end
-    })
+    local entry = DUIF.CreateTextEntry(card, "Type here and press enter...")
     entry:SetPos(12, 64)
     entry:SetSize(280, 34)
 
@@ -77,19 +73,11 @@ local function createInputDemo(parent)
     slider:SetPos(304, 60)
     slider:SetSize(260, 42)
 
-    local dropdown = DUIF.CreateDropdown(card, { "Alpha", "Bravo", "Charlie", "Delta" }, {
-        onSelect = function(_, _, value)
-            chat.AddText(DUIF.GetColor("AccentBlue"), "[Dropdown] ", DUIF.GetColor("Text"), value)
-        end
-    })
+    local dropdown = DUIF.CreateDropdown(card, { "Alpha", "Bravo", "Charlie", "Delta" })
     dropdown:SetPos(576, 64)
     dropdown:SetSize(200, 34)
 
-    local toggle = DUIF.CreateToggle(card, true, {
-        onChanged = function(_, v)
-            chat.AddText(DUIF.GetColor("Success"), "[Toggle] ", DUIF.GetColor("Text"), tostring(v))
-        end
-    })
+    local toggle = DUIF.CreateToggle(card, true)
     toggle:SetPos(790, 67)
 
     snippet(parent, "DUIF.CreateTextEntry / CreateSlider / CreateDropdown / CreateToggle")
@@ -136,6 +124,60 @@ local function createLayoutDemo(parent)
     snippet(parent, "DUIF.CreateCard(...) and DUIF.CreateCloseButton(parent)")
 end
 
+local function createExtraModuleDemo(parent)
+    section(parent, "Extra Modules", "Progress bars, tabs, collapsible sections, modal helper")
+
+    local card = DUIF.CreateCard(parent, {
+        tall = 254,
+        header = "Toolkit Extras",
+        description = "More ready-to-use modules for larger projects",
+        accentBorder = true
+    })
+
+    local progress = DUIF.CreateProgressBar(card, { value = 64, max = 100, showText = true })
+    progress:SetPos(12, 62)
+    progress:SetSize(280, 20)
+
+    local tabs = DUIF.CreateTabs(card)
+    tabs:SetPos(304, 58)
+    tabs:SetSize(380, 144)
+
+    tabs:AddTab("Stats", function(panel)
+        local t = vgui.Create("DLabel", panel)
+        t:SetFont("DUIF.Small")
+        t:SetTextColor(DUIF.GetColor("TextMuted"))
+        t:SetText("Server Uptime: 04:22:15")
+        t:SizeToContents()
+        t:SetPos(8, 12)
+    end)
+
+    tabs:AddTab("Logs", function(panel)
+        local t = vgui.Create("DLabel", panel)
+        t:SetFont("DUIF.Small")
+        t:SetTextColor(DUIF.GetColor("TextMuted"))
+        t:SetText("No warnings in the last 5 minutes.")
+        t:SizeToContents()
+        t:SetPos(8, 12)
+    end)
+
+    local coll = DUIF.CreateCollapsible(card, "Advanced Actions", {
+        startOpen = false,
+        contentTall = 72
+    })
+    coll:SetPos(694, 58)
+    coll:SetSize(270, 106)
+
+    local modalBtn = DUIF.CreateButton(card, "Open Modal", "primary", {
+        onClick = function()
+            DUIF.CreateModal("DUIF Modal", "This is a reusable modal dialog component.")
+        end
+    })
+    modalBtn:SetPos(694, 170)
+    modalBtn:SetSize(130, 32)
+
+    snippet(parent, "CreateProgressBar / CreateTabs / CreateCollapsible / CreateModal")
+end
+
 function DUIF.OpenShowcase()
     if IsValid(DUIF.ShowcaseFrame) then DUIF.ShowcaseFrame:Remove() end
 
@@ -152,18 +194,21 @@ function DUIF.OpenShowcase()
     body:DockMargin(12, 64, 12, 12)
     DUIF.StyleScrollBar(body, { wide = 12, rounded = 6 })
 
-    local head = vgui.Create("DPanel", body)
-    head:Dock(TOP)
-    head:SetTall(72)
-    head:DockMargin(0, 0, 0, 10)
-    head.Paint = function(_, w, h)
-        draw.SimpleText("Dubz UI Framework", "DUIF.Title", 0, 0, DUIF.GetColor("Text"), TEXT_ALIGN_LEFT)
-        draw.SimpleText("Reusable Derma toolkit with modular components, themes, and animations.", "DUIF.Body", 0, 38, DUIF.GetColor("TextMuted"), TEXT_ALIGN_LEFT)
+    local headWrap = vgui.Create("DPanel", body)
+    headWrap:Dock(TOP)
+    headWrap:SetTall(88)
+    headWrap:DockMargin(0, 0, 0, 10)
+    headWrap.Paint = function(_, w, h)
+        DUIF.DrawRoundedBox(10, 0, 0, w, h, ColorAlpha(DUIF.GetColor("Surface"), 180))
+        DUIF.DrawGradient(0, 0, w, 3, DUIF.GetColor("Accent"), DUIF.GetColor("AccentAlt"), true)
+        draw.SimpleText("Dubz UI Framework", "DUIF.Title", 12, 8, DUIF.GetColor("Text"), TEXT_ALIGN_LEFT)
+        draw.SimpleText("Reusable Derma toolkit with modular components, themes, and animations.", "DUIF.Body", 12, 46, DUIF.GetColor("TextMuted"), TEXT_ALIGN_LEFT)
     end
 
     createButtonDemo(body)
     createInputDemo(body)
     createLayoutDemo(body)
+    createExtraModuleDemo(body)
 end
 
 concommand.Add("duif_showcase", function()

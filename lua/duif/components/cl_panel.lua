@@ -26,10 +26,16 @@ function DUIF.CreateFrame(title, width, height, opts)
 
     frame.Paint = function(self, w, h)
         DUIF.DrawShadowedPanel(0, 0, w, h, opts.rounded, DUIF.GetColor("Background"))
-        DUIF.DrawRoundedBox(opts.rounded, 0, 0, w, 56, DUIF.GetColor("Surface"))
+
+        DUIF.DrawGradient(1, 1, w - 2, h - 2, ColorAlpha(DUIF.GetColor("Background"), 235), ColorAlpha(DUIF.GetColor("Surface"), 210), false)
+
+        DUIF.DrawRoundedBox(opts.rounded, 0, 0, w, 58, DUIF.GetColor("Surface"))
+        DUIF.DrawGradient(0, 0, w, 58, ColorAlpha(DUIF.GetColor("Accent"), 45), ColorAlpha(DUIF.GetColor("AccentAlt"), 35), true)
+
         surface.SetDrawColor(DUIF.GetColor("Border"))
-        surface.DrawLine(0, 56, w, 56)
-        draw.SimpleText(self.Title, "DUIF.Header", 16, 28, DUIF.GetColor("Text"), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+        surface.DrawLine(0, 58, w, 58)
+
+        draw.SimpleText(self.Title, "DUIF.Header", 16, 29, DUIF.GetColor("Text"), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     end
 
     if opts.showClose then
